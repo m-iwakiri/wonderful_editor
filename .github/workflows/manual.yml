@@ -1,0 +1,36 @@
+name: Update Labels when Requested Changes
+
+on:
+  pull_request_review:
+    types: [submitted]
+
+jobs:
+  update-labels:
+    if: github.event.review.state == 'changes_requested'
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+    # Runs a single command using the runners shell
+    - name: 「レビュー依頼中」ラベルの除去
+      uses: actions/github-script@v7
+      continue-on-error: true # ラベルがない場合はエラーになるが無視
+      with:
+        script: |
+            github.rest.issues.removeLabel({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              name: 'レビュー依頼中',
+            });
+    - name: 「レビューを受けての修正中」ラベルの付与
+      uses: actions/github-script@v7
+      with:
+          script: |
+            github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              labels: ['レビューを受けての修正中'],
+            });
