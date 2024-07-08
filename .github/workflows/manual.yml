@@ -17,20 +17,22 @@ jobs:
       uses: actions/github-script@v7
       continue-on-error: true # ラベルがない場合はエラーになるが無視
       with:
+      　　　　github-token: ${{secrets.GITHUB_TOKEN}}
         script: |
-            github.rest.issues.removeLabel({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-              name: 'レビュー依頼中',
-            });
+          github.rest.issues.removeLabel({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            issue_number: context.issue.number,
+            name: 'レビュー依頼中',
+          });
     - name: 「レビューを受けての修正中」ラベルの付与
       uses: actions/github-script@v7
       with:
-          script: |
-            github.rest.issues.addLabels({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-              labels: ['レビューを受けての修正中'],
-            });
+        github-token: ${{secrets.GITHUB_TOKEN}}
+        script: |
+          github.rest.issues.addLabels({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            issue_number: context.issue.number,
+            labels: ['レビューを受けての修正中'],
+          });
